@@ -30,13 +30,14 @@ function AppRoutes() {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<RoleRoute allowedRoles={['CITIZEN']} />}>
-          <Route element={<AppLayout role="Citizen" />}>
+          <Route element={<AppLayout role="Citizen" hideHeader />}>
             <Route path="/citizen" element={<CitizenDashboard />} />
             <Route path="/citizen/report" element={<ReportIssuePage />} />
             <Route path="/citizen/issues" element={<CitizenIssuesPage />} />
             <Route path="/citizen/issues/:id" element={<CitizenIssueDetailPage />} />
           </Route>
         </Route>
+
 
         <Route element={<RoleRoute allowedRoles={['ADMIN']} />}>
           <Route element={<AppLayout role="Admin" />}>
