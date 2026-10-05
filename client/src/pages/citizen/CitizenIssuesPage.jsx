@@ -1,7 +1,7 @@
-import PlaceholderPage from '../../components/PlaceholderPage'
+import MyIssues from '../MyIssues'
 
 function CitizenIssuesPage() {
-  return <PlaceholderPage role="Citizen" title="My Issues" />
+  return <MyIssues />
 }
 
 export default CitizenIssuesPage

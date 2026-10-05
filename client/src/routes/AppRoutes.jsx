@@ -35,6 +35,7 @@ function AppRoutes() {
             <Route path="/citizen/report" element={<ReportIssuePage />} />
             <Route path="/citizen/issues" element={<CitizenIssuesPage />} />
             <Route path="/citizen/issues/:id" element={<CitizenIssueDetailPage />} />
+            <Route path="/my-issues" element={<CitizenIssuesPage />} />
           </Route>
         </Route>
 

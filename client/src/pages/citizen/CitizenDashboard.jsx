@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import CitizenNavbar from '../../components/citizen/CitizenNavbar'
 import './CitizenDashboard.css'
 
 // ── Mock statistics ───────────────────────────────────────────
@@ -64,18 +65,6 @@ const STEPS = [
     desc: 'Follow the status of your report in real time — from submitted to in-progress to resolved.',
   },
 ]
-
-// ── Helpers ───────────────────────────────────────────────────
-function getInitials(name) {
-  if (!name) return '?'
-  return name
-    .trim()
-    .split(' ')
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
-}
 
 // ══════════════════════════════════════════════════════════════
 // QuickReport — camera / upload / location / preview
@@ -365,111 +354,6 @@ function QuickReport() {
 }
 
 // ══════════════════════════════════════════════════════════════
-// CitizenNavbar
-// ══════════════════════════════════════════════════════════════
-function CitizenNavbar({ user, onLogout }) {
-  const navigate = useNavigate()
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const { pathname } = window.location
-
-  const navLinks = [
-    { label: 'Dashboard', href: '/citizen' },
-    { label: 'My Issues', href: '/citizen/issues' },
-  ]
-
-  return (
-    <>
-      <nav className="cz-nav" role="navigation" aria-label="Citizen navigation">
-        <div className="cz-nav-inner">
-          {/* Brand */}
-          <a
-            className="cz-nav-brand"
-            href="/citizen"
-            onClick={(e) => { e.preventDefault(); navigate('/citizen') }}
-          >
-            <div className="cz-nav-logo-mark" aria-hidden="true">⚡</div>
-            <span className="cz-nav-brand-name">
-              Civic<span className="cz-nav-brand-dot">Flow</span>
-            </span>
-          </a>
-
-          {/* Desktop nav links */}
-          <ul className="cz-nav-links" role="list">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className={`cz-nav-link${pathname === link.href ? ' active' : ''}`}
-                  onClick={(e) => { e.preventDefault(); navigate(link.href) }}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          {/* User area */}
-          <div className="cz-nav-user">
-            <div
-              className="cz-nav-avatar"
-              aria-label={`Signed in as ${user?.name}`}
-              title={user?.name}
-            >
-              {getInitials(user?.name)}
-            </div>
-            <span className="cz-nav-username">{user?.name}</span>
-            <button
-              id="nav-logout-btn"
-              type="button"
-              className="cz-nav-logout"
-              onClick={onLogout}
-            >
-              Sign out
-            </button>
-
-            {/* Mobile hamburger */}
-            <button
-              id="nav-hamburger-btn"
-              type="button"
-              className="cz-nav-hamburger"
-              onClick={() => setMobileOpen((o) => !o)}
-              aria-label="Toggle navigation"
-              aria-expanded={mobileOpen}
-            >
-              <span />
-              <span />
-              <span />
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile drawer */}
-      <div className={`cz-nav-mobile${mobileOpen ? ' open' : ''}`} aria-hidden={!mobileOpen}>
-        {navLinks.map((link) => (
-          <button
-            key={link.href}
-            type="button"
-            className="cz-nav-mobile-link"
-            onClick={() => { navigate(link.href); setMobileOpen(false) }}
-          >
-            {link.label}
-          </button>
-        ))}
-        <div className="cz-nav-mobile-divider" />
-        <button
-          type="button"
-          className="cz-nav-mobile-link"
-          onClick={() => { onLogout(); setMobileOpen(false) }}
-        >
-          Sign out
-        </button>
-      </div>
-    </>
-  )
-}
-
-// ══════════════════════════════════════════════════════════════
 // CitizenDashboard (main page)
 // ══════════════════════════════════════════════════════════════
 function CitizenDashboard() {
@@ -523,7 +407,7 @@ function CitizenDashboard() {
               id="hero-issues-btn"
               type="button"
               className="cz-btn-secondary"
-              onClick={() => navigate('/citizen/issues')}
+              onClick={() => navigate('/my-issues')}
             >
               View My Issues
             </button>
@@ -612,13 +496,47 @@ function CitizenDashboard() {
               <p className="cz-section-eyebrow" style={{ margin: 0 }}>Activity</p>
               <h2 className="cz-section-title" style={{ marginBottom: 0 }}>Recent Reports</h2>
             </div>
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <button
+                id="recent-view-my-issues-btn"
+                type="button"
+                className="cz-btn-secondary"
+                style={{ fontSize: '13px', padding: '9px 18px' }}
+                onClick={() => navigate('/my-issues')}
+              >
+                📋 View All My Issues
+              </button>
+              <button
+                id="recent-new-report-btn"
+                type="button"
+                className="cz-btn-teal-outline"
+                onClick={scrollToReport}
+              >
+                + New Report
+              </button>
+            </div>
+          </div>
+
+          {/* ── My Issues Prominent Dashboard Entry Point ──── */}
+          <div className="cz-my-issues-dashboard-card" id="dashboard-my-issues-entry">
+            <div className="cz-dashboard-card-info">
+              <div className="cz-dashboard-card-tag">
+                <span aria-hidden="true">📋</span>
+                <span>Citizen Tracking</span>
+              </div>
+              <h3 className="cz-dashboard-card-title">Manage & Track Your Reported Issues</h3>
+              <p className="cz-dashboard-card-desc">
+                View all civic issues you have reported, inspect field team assignments, and follow resolution milestones in real time.
+              </p>
+            </div>
             <button
-              id="recent-new-report-btn"
+              id="dashboard-open-my-issues-btn"
               type="button"
-              className="cz-btn-teal-outline"
-              onClick={scrollToReport}
+              className="cz-btn-primary"
+              style={{ fontSize: '14px', padding: '12px 22px' }}
+              onClick={() => navigate('/my-issues')}
             >
-              + New Report
+              Open My Issues →
             </button>
           </div>
 
@@ -634,15 +552,26 @@ function CitizenDashboard() {
               Your reported civic issues will appear here. Submit your first
               report above and start making a difference.
             </p>
-            <button
-              id="empty-state-report-btn"
-              type="button"
-              className="cz-btn-primary"
-              style={{ fontSize: '14px', padding: '12px 24px', marginTop: '8px' }}
-              onClick={scrollToReport}
-            >
-              Make Your First Report
-            </button>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '8px' }}>
+              <button
+                id="empty-state-report-btn"
+                type="button"
+                className="cz-btn-primary"
+                style={{ fontSize: '14px', padding: '12px 24px' }}
+                onClick={scrollToReport}
+              >
+                Make Your First Report
+              </button>
+              <button
+                id="empty-state-view-issues-btn"
+                type="button"
+                className="cz-btn-secondary"
+                style={{ fontSize: '14px', padding: '12px 24px' }}
+                onClick={() => navigate('/my-issues')}
+              >
+                Go to My Issues
+              </button>
+            </div>
           </div>
         </section>
 
