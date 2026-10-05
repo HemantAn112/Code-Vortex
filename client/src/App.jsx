@@ -5,11 +5,13 @@ import './App.css'
 
 function App() {
   return (
+
     <BrowserRouter>
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>
     </BrowserRouter>
+    
   )
 }
 
